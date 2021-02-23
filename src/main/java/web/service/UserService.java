@@ -12,7 +12,7 @@ public interface UserService extends UserDetailsService {
     User show(int id);
     List<User> index();
     boolean create(User user);
-    void update(int id, User user);
+    void update(User user);
     void delete(int id);
     User findByUserForUsername(String username);
     List<Role> allRoles();

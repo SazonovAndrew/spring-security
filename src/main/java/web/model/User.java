@@ -2,10 +2,12 @@ package web.model;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import javax.persistence.*;
+import javax.validation.constraints.*;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -27,11 +29,14 @@ public class User implements UserDetails {
 
    @Column(name = "age")
    private int age;
-//   @Size(min=2, message = "Не меньше 5 знаков")
+
+
    @Column(name = "username")
+   @Size(min = 5, message = "Must be more than 5 symbols")
    private String username;
-//   @Size(min=2, message = "Не меньше 5 знаков")
+
    @Column(name = "password")
+   @Size(min = 5, message = "Must be more than 5 symbols")
    private String password;
    @Transient
    private String passwordConfirm;
@@ -95,6 +100,22 @@ public class User implements UserDetails {
       this.age = age;
    }
 
+   public void setUsername(String username) {
+      this.username = username;
+   }
+
+   public void setPassword(String password) {
+      this.password = password;
+   }
+
+   public String getPasswordConfirm() {
+      return passwordConfirm;
+   }
+
+   public void setPasswordConfirm(String passwordConfirm) {
+      this.passwordConfirm = passwordConfirm;
+   }
+
    @Override
    public String toString() {
       return "User{" +
@@ -144,6 +165,12 @@ public class User implements UserDetails {
    public Set<Role> getRoles() {
       return roles;
    }
+   public String rolesString(){
+      return getRoles().stream()
+              .map(Object::toString)
+              .collect(Collectors.joining(", "));
+   }
+
 
    public void setRoles(Set<Role> roles) {
       this.roles = roles;

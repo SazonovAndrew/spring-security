@@ -3,31 +3,24 @@ package web.dao;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import web.model.Role;
 import web.model.User;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
-
 import java.util.List;
 import java.util.Set;
 
 @Repository
 public class UserDaoImp implements  UserDao {
 
-
-
    private EntityManagerFactory emf;
    @Autowired
    public void setEmf(EntityManagerFactory emf) {
       this.emf = emf;
    }
-
-//   @Autowired
-//   private BCryptPasswordEncoder bCryptPasswordEncoder;
-
+   @Autowired
+   private BCryptPasswordEncoder bCryptPasswordEncoder;
 
    @Override
    public List<User> index() {
@@ -57,6 +50,7 @@ public class UserDaoImp implements  UserDao {
          return false;
       }
       Set<Role> roleSet = (Set<Role>) user.getAuthorities();
+      user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
       user.setRoles(roleSet);
       em.persist(user);
       em.getTransaction().commit();
@@ -65,10 +59,16 @@ public class UserDaoImp implements  UserDao {
    }
 
    @Override
-   public void update(int id, User user) {
+   public void update(User user) {
       EntityManager em = emf.createEntityManager();
       em.getTransaction().begin();
+
+
+      Set<Role> roleSet = (Set<Role>) user.getAuthorities();
+      user.setRoles(roleSet);
+      user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
       em.merge(user);
+
       em.getTransaction().commit();
       em.close();
    }
@@ -97,12 +97,4 @@ public class UserDaoImp implements  UserDao {
       em.close();
       return user;
    }
-   //   @Override
-//   public User getUsersWithCar(String name, int series) {
-//      Query  query = sessionFactory.getCurrentSession()
-//              .createQuery("from User where  car.name = :paramName and  car.series =: paramSeries");
-//      query.setParameter("paramName", name);
-//      query.setParameter("paramSeries", series);
-//      return (User) query.getSingleResult();
-//   }
 }
