@@ -27,8 +27,8 @@ public class UserServiceImp implements UserService {
    }
 
    @Override
-   public User show(int id) {
-      return userDao.show(id);
+   public User getUserById(int id) {
+      return userDao.getUserById(id);
    }
 
    @Override
@@ -69,6 +69,11 @@ public class UserServiceImp implements UserService {
    @Override
    public boolean saveRole(Role role) {
       return roleDao.saveRole(role);
+   }
+
+   @Override
+   public boolean userExist(String username) {
+      return userDao.userExist(username);
    }
 
    @Override

@@ -7,12 +7,17 @@
 </head>
 <body>
 
-<form th:method="PATCH" th:action="@{/admin/edit}" th:object="${userEdit}">
+<form th:method="POST" th:action="@{/admin/edit}" th:object="${userEdit}" >
 
     <table >
         <tr>
+            <td><label>Id:</label></td>
+            <td><input th:type="number" th:field="*{id}" readonly></td>
+        </tr>
+
+        <tr>
             <td><label> Enter name</label></td>
-            <td><input type = "text" th:field = "*{name}" id ="name" readonly></td>
+            <td><input type = "text" th:field = "*{name}" id ="name" ></td>
         </tr>
         <tr>
             <td><label> Enter surname</label></td>
@@ -28,7 +33,8 @@
         </tr>
         <tr>
             <td><label for ="username"> Enter username</label></td>
-            <td><input type = "text" th:field = "*{username}" id ="username"></td>
+            <td><input type = "text" th:field = "*{username}" id ="username" th:text="${nameExists}"></td>
+
         </tr>
         <tr>
             <td><label for ="password"> Enter password</label></td>
@@ -37,18 +43,30 @@
         <tr>
             <td><label for ="passwordConfirm"> Enter passwordConfirm</label></td>
             <td> <input type = "password" th:field = "*{passwordConfirm}" id ="passwordConfirm"></td>
+            <br/>
+            <p th:text="${errorpassword}"></p>
         </tr>
-        <p th:text="${errorpassword}"></p>
-    </table>
 
+    </table>
+    <!--      th:field ="*{roles}"      -->
+<!--    <input  type="checkbox" name="addRole"-->
+<!--            th:each="role : ${allRoles}"-->
+<!--            th:value="${role.id} "-->
+<!--            th:field ="*{roles}"-->
+<!--            th:text="${role.name}"-->
+
+<!--    />-->
+
+    <br/>
     <input  type="checkbox" name="addRole"
             th:each="role : ${allRoles}"
-            th:value="${role} "
-            th:field ="*{roles}"
+            th:value="${role.name} "
             th:text="${role.name}"
     />
     <br/>
-    <input  type="submit"  value="Create">
+
+
+        <input  type="submit"  value="Update">
 </form>
 </body>
 </html>

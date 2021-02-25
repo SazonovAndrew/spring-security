@@ -32,7 +32,7 @@ public class UserDaoImp implements  UserDao {
    }
 
    @Override
-   public User show(int id) {
+   public User getUserById(int id) {
       EntityManager em = emf.createEntityManager();
       em.getTransaction().begin();
       User user = em.find(User.class, id);
@@ -59,18 +59,24 @@ public class UserDaoImp implements  UserDao {
    }
 
    @Override
-   public void update(User user) {
+   public boolean update(User user) {
       EntityManager em = emf.createEntityManager();
       em.getTransaction().begin();
 
 
+
       Set<Role> roleSet = (Set<Role>) user.getAuthorities();
       user.setRoles(roleSet);
-      user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+      if(user.getPassword().equals("")){
+         user.setPassword(getUserById(user.getId()).getPassword());
+      }else{
+         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+      }
       em.merge(user);
 
       em.getTransaction().commit();
       em.close();
+      return true;
    }
 
    @Override
@@ -96,5 +102,10 @@ public class UserDaoImp implements  UserDao {
       em.getTransaction().commit();
       em.close();
       return user;
+   }
+
+   @Override
+   public boolean userExist(String username) {
+      return findByUserForUsername(username) != null;
    }
 }

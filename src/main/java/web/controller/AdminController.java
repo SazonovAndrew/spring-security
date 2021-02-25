@@ -68,13 +68,19 @@ public class AdminController {
 
     @GetMapping("/admin/edit/{id}")
     public String edit( @PathVariable(value = "id")  int id, Model model){
-        model.addAttribute("userEdit", userService.show(id));
+        model.addAttribute("userEdit", userService.getUserById(id));
         model.addAttribute("allRoles", userService.allRoles());
         return "edit";
     }
-    @PatchMapping("/admin/edit")
-    public String update(@ModelAttribute("userEdit") User userEdit,
+    @PostMapping("/admin/edit")
+    public String update(@ModelAttribute(value = "userEdit") User userEdit,
                          @RequestParam(value = "addRole", required = false) ArrayList<String> userRole, Model model){
+        if( userService.userExist(userEdit.getUsername())  &&
+                userEdit.getId() != userService.findByUserForUsername(userEdit.getUsername()).getId()) {
+            model.addAttribute("nameExists", "such username already exists");
+            return "edit";
+        }
+
         if(!userEdit.getPassword().equals(userEdit.getPasswordConfirm())){
             model.addAttribute("errorpassword", "passwords don't equals");
             return "edit";

@@ -32,11 +32,11 @@ public class User implements UserDetails {
 
 
    @Column(name = "username")
-   @Size(min = 5, message = "Must be more than 5 symbols")
+   @Size(min = 4, message = "Must be more than 4 symbols")
    private String username;
 
    @Column(name = "password")
-   @Size(min = 5, message = "Must be more than 5 symbols")
+   @Size(min = 4, message = "Must be more than 4 symbols")
    private String password;
    @Transient
    private String passwordConfirm;
@@ -170,6 +170,8 @@ public class User implements UserDetails {
               .map(Object::toString)
               .collect(Collectors.joining(", "));
    }
+
+
 
 
    public void setRoles(Set<Role> roles) {

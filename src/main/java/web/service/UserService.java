@@ -9,7 +9,7 @@ import web.model.User;
 import java.util.List;
 
 public interface UserService extends UserDetailsService {
-    User show(int id);
+    User getUserById(int id);
     List<User> index();
     boolean create(User user);
     void update(User user);
@@ -19,6 +19,7 @@ public interface UserService extends UserDetailsService {
     Role findById(Long id);
     void deleteRole(Long id);
     boolean saveRole(Role role);
+    boolean userExist(String username);
     @Override
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 }
