@@ -5,6 +5,7 @@
       <map>
         <entry key="file://$PROJECT_DIR$/src/webapp/WEB-INF/pages/hello.html" value="file://$PROJECT_DIR$/src/webapp/WEB-INF/pages" />
         <entry key="file://$PROJECT_DIR$/src/webapp/WEB-INF/pages/jm-spring/index.html" value="file://$PROJECT_DIR$/src/webapp/WEB-INF/pages/jm-spring" />
+        <entry key="file://$PROJECT_DIR$/src/webapp/WEB-INF/pages/users.html" value="file://$PROJECT_DIR$/src/webapp/WEB-INF/pages" />
       </map>
     </option>
   </component>

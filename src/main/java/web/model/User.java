@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,7 @@ public class User implements UserDetails {
    @Transient
    private String passwordConfirm;
 
-   @ManyToMany(fetch = FetchType.EAGER)
+   @ManyToMany(fetch = FetchType.LAZY)
    @JoinTable(name = "users_roles",
            joinColumns = @JoinColumn(name = "user_id"),
            inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -168,6 +169,7 @@ public class User implements UserDetails {
    public String rolesString(){
       return getRoles().stream()
               .map(Object::toString)
+              .map(p -> p.replace("ROLE_", " "))
               .collect(Collectors.joining(", "));
    }
 

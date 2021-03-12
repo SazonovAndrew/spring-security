@@ -21,16 +21,14 @@ public class UserDaoImp implements  UserDao {
    }
    @Autowired
    private BCryptPasswordEncoder bCryptPasswordEncoder;
-
    @Override
    public List<User> index() {
       EntityManager em = emf.createEntityManager();
       em.getTransaction().begin();
-      List<User> userList = em.createQuery("SELECT c from User c").getResultList();
+      List<User> userList = em.createQuery("SELECT DISTINCT u FROM User u  JOIN FETCH u.roles ORDER BY u.id", User.class).getResultList();
       em.close();
       return userList;
    }
-
    @Override
    public User getUserById(int id) {
       EntityManager em = emf.createEntityManager();
@@ -40,7 +38,6 @@ public class UserDaoImp implements  UserDao {
       em.close();
       return user;
    }
-
    @Override
    public boolean create(User user) {
       EntityManager em = emf.createEntityManager();
@@ -49,36 +46,21 @@ public class UserDaoImp implements  UserDao {
       if (userFromBD != null){
          return false;
       }
-      Set<Role> roleSet = (Set<Role>) user.getAuthorities();
-      user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-      user.setRoles(roleSet);
+
       em.persist(user);
       em.getTransaction().commit();
       em.close();
       return true;
    }
-
    @Override
    public boolean update(User user) {
       EntityManager em = emf.createEntityManager();
       em.getTransaction().begin();
-
-
-
-      Set<Role> roleSet = (Set<Role>) user.getAuthorities();
-      user.setRoles(roleSet);
-      if(user.getPassword().equals("")){
-         user.setPassword(getUserById(user.getId()).getPassword());
-      }else{
-         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-      }
       em.merge(user);
-
       em.getTransaction().commit();
       em.close();
       return true;
    }
-
    @Override
    public void delete(int id) {
       EntityManager em = emf.createEntityManager();
@@ -87,23 +69,22 @@ public class UserDaoImp implements  UserDao {
       em.getTransaction().commit();
       em.close();
    }
-
    @Override
    public User findByUserForUsername(String username) {
       EntityManager em = emf.createEntityManager();
       em.getTransaction().begin();
       User user = null;
       try {
-         Query query = em.createQuery("SELECT u FROM User u WHERE u.username=:username");
+         Query query = em.createQuery("SELECT u FROM User u JOIN FETCH u.roles WHERE u.username=:username");
          query.setParameter("username", username);
          user = (User) query.getSingleResult();
       } catch (Exception e) {
+
       }
       em.getTransaction().commit();
       em.close();
       return user;
    }
-
    @Override
    public boolean userExist(String username) {
       return findByUserForUsername(username) != null;

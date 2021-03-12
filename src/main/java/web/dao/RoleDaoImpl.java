@@ -19,7 +19,7 @@ public class RoleDaoImpl implements RoleDao{
     public List<Role> allRoles() {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        List<Role> roleList = em.createQuery("SELECT c from Role c").getResultList();
+        List<Role> roleList = em.createQuery("SELECT r FROM Role r", Role.class).getResultList();
         em.getTransaction().commit();
         em.close();
         return roleList;

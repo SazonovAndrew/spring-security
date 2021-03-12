@@ -24,6 +24,7 @@ public class AdminController {
 
     @GetMapping("/admin/view")
     public String index(Model model) {
+        List<User> list = userService.index();
         model.addAttribute("users", userService.index());
         return "index";
     }
@@ -33,9 +34,7 @@ public class AdminController {
         model.addAttribute("allRoles", userService.allRoles());
         return "new";
     }
-
     @PostMapping("/admin/new")
-
     public  String create (@Valid @ModelAttribute("user") User user, BindingResult bindingResult,
                            @RequestParam(value = "addRole", required = false) ArrayList<String> userRole, Model model){
         if(!user.getPassword().equals(user.getPasswordConfirm())){
@@ -47,25 +46,11 @@ public class AdminController {
             model.addAttribute("allRoles", userService.allRoles());
             return "new";
         }
-        Set<Role> roleSet = new HashSet<>();
-        if(userRole.isEmpty()){
-            user.setRoles(Collections.singleton(new Role(2L,"ROLE_USER")));
-            userService.create(user);
-            return "redirect:/admin/view";
-        }
-        if (userRole.contains("ROLE_ADMIN")){
-            roleSet.add(new Role(1L, "ADMIN"));
-            user.setRoles(roleSet);
-        }
-        if (userRole.contains("ROLE_USER")) {
-            roleSet.add(new Role(2L, "USER"));
-            user.setRoles(roleSet);
-        }
+        userService.addRolesToUser(user, userRole);
         userService.create(user);
 
         return "redirect:/admin/view";
     }
-
     @GetMapping("/admin/edit/{id}")
     public String edit( @PathVariable(value = "id")  int id, Model model){
         model.addAttribute("userEdit", userService.getUserById(id));
@@ -85,34 +70,14 @@ public class AdminController {
             model.addAttribute("errorpassword", "passwords don't equals");
             return "edit";
         }
-        Set<Role> roleSet = new HashSet<>();
-        if(userRole.isEmpty()){
-            userEdit.setRoles(Collections.singleton(new Role(2L,"ROLE_USER")));
-            userService.create(userEdit);
-            return "redirect:/admin/view";
-        }
-        if (userRole.contains("ROLE_ADMIN")){
-            roleSet.add(new Role(1L, "ADMIN"));
-            userEdit.setRoles(roleSet);
-        }
-        if (userRole.contains("ROLE_USER")) {
-            roleSet.add(new Role(2L, "USER"));
-            userEdit.setRoles(roleSet);
-        }
-
+        userService.addRolesToUser(userEdit, userRole);
         userService.update(userEdit);
         return "redirect:/admin/view";
     }
-
-
     @DeleteMapping("/admin/{id}")
     public String delete(@PathVariable("id") int id){
         userService.delete(id);
         return "redirect:/admin/view";
     }
-//
-//    @GetMapping("/logout")
-//    public String logout() {
-//        return "login";
-//    }
+
 }
